@@ -6,9 +6,9 @@
           <div class="row">
             <div class="row" style="margin-left: 10px">
               <label>语言</label>
-              <el-select size="small" default-first-option filterable @change="changeLang(selectedLang)"
+              <el-select size="small" @change="changeLang(selectedLang)"
                          v-model="selectedLang">
-                <el-option v-for="item in languages" :key="item" :label="item" :value="item"/>
+                <el-option v-for="item in codeLanguages" :key="item.value" :label="item.label" :value="item.value"/>
               </el-select>
             </div>
             <div class="row" style="margin-left: 20px">
@@ -28,7 +28,7 @@
         <el-col :span="12" :xs="24">
           <div class="row">
             <div style="margin-left: auto">
-              <label> {{ workspace === 0 ? "正在创建工作区..." : "工作区: " + workspace}}</label>
+              <label> {{ workspace === 0 ? "正在创建工作区..." : "工作区: " + workspace }}</label>
             </div>
             <div style="margin-left: 20px; margin-right: 10px">
               <el-button-group style="width: 219px; white-space: nowrap">
@@ -38,7 +38,7 @@
                 </el-button>
                 <el-popover :show-after="1000" placement="bottom-end" :width="400" trigger="hover">
                   <span style="margin-right: 20px">你可以通过下面的链接打开此页面</span><br/>
-                  <el-link type="primary" :href="pageUrl">
+                  <el-link type="primary" target="_blank" :href="pageUrl">
                     {{ pageUrl }}
                   </el-link>
                   <br/>
@@ -100,14 +100,74 @@ export default defineComponent({
   },
   data() {
     return {
-      languages: [
-        "abap", "aes", "apex", "azcli", "bat", "c", "cameligo", "clojure", "coffeescript", "cpp", "csharp", "csp",
-        "css", "dart", "dockerfile", "ecl", "fsharp", "go", "graphql", "handlebars", "hcl", "html", "ini", "java",
-        "javascript", "json", "julia", "kotlin", "less", "lexon", "lua", "m3", "markdown", "mips", "msdax", "mysql",
-        "objective-c", "pascal", "pascaligo", "perl", "pgsql", "php", "plaintext", "postiats", "powerquery",
-        "powershell", "pug", "python", "r", "razor", "redis", "redshift", "restructuredtext", "ruby", "rust", "sb",
-        "scala", "scheme", "scss", "shell", "sol", "sql", "st", "swift", "systemverilog", "tcl", "twig", "typescript",
-        "vb", "verilog", "xml", "yaml"
+      codeLanguages: [
+        {label: "abap", value: "abap"}, {label: "aes", value: "aes"}, {label: "apex", value: "apex"}, {
+          label: "azcli",
+          value: "azcli"
+        }, {label: "bat", value: "bat"}, {label: "c", value: "c"}, {
+          label: "cameligo",
+          value: "cameligo"
+        }, {label: "clojure", value: "clojure"}, {label: "coffeescript", value: "coffeescript"}, {
+          label: "cpp",
+          value: "cpp"
+        }, {label: "csharp", value: "csharp"}, {label: "csp", value: "csp"}, {
+          label: "css",
+          value: "css"
+        }, {label: "dart", value: "dart"}, {label: "dockerfile", value: "dockerfile"}, {
+          label: "ecl",
+          value: "ecl"
+        }, {label: "fsharp", value: "fsharp"}, {label: "go", value: "go"}, {
+          label: "graphql",
+          value: "graphql"
+        }, {label: "handlebars", value: "handlebars"}, {label: "hcl", value: "hcl"}, {
+          label: "html",
+          value: "html"
+        }, {label: "ini", value: "ini"}, {label: "java", value: "java"}, {
+          label: "javascript",
+          value: "javascript"
+        }, {label: "json", value: "json"}, {label: "julia", value: "julia"}, {
+          label: "kotlin",
+          value: "kotlin"
+        }, {label: "less", value: "less"}, {label: "lexon", value: "lexon"}, {label: "lua", value: "lua"}, {
+          label: "m3",
+          value: "m3"
+        }, {label: "markdown", value: "markdown"}, {label: "mips", value: "mips"}, {
+          label: "msdax",
+          value: "msdax"
+        }, {label: "mysql", value: "mysql"}, {label: "objective-c", value: "objective-c"}, {
+          label: "pascal",
+          value: "pascal"
+        }, {label: "pascaligo", value: "pascaligo"}, {label: "perl", value: "perl"}, {
+          label: "pgsql",
+          value: "pgsql"
+        }, {label: "php", value: "php"}, {label: "plaintext", value: "plaintext"}, {
+          label: "postiats",
+          value: "postiats"
+        }, {label: "powerquery", value: "powerquery"}, {label: "powershell", value: "powershell"}, {
+          label: "pug",
+          value: "pug"
+        }, {label: "python", value: "python"}, {label: "r", value: "r"}, {
+          label: "razor",
+          value: "razor"
+        }, {label: "redis", value: "redis"}, {label: "redshift", value: "redshift"}, {
+          label: "restructuredtext",
+          value: "restructuredtext"
+        }, {label: "ruby", value: "ruby"}, {label: "rust", value: "rust"}, {label: "sb", value: "sb"}, {
+          label: "scala",
+          value: "scala"
+        }, {label: "scheme", value: "scheme"}, {label: "scss", value: "scss"}, {
+          label: "shell",
+          value: "shell"
+        }, {label: "sol", value: "sol"}, {label: "sql", value: "sql"}, {label: "st", value: "st"}, {
+          label: "swift",
+          value: "swift"
+        }, {label: "systemverilog", value: "systemverilog"}, {label: "tcl", value: "tcl"}, {
+          label: "twig",
+          value: "twig"
+        }, {label: "typescript", value: "typescript"}, {label: "vb", value: "vb"}, {
+          label: "verilog",
+          value: "verilog"
+        }, {label: "xml", value: "xml"}, {label: "yaml", value: "yaml"},
       ],
       themes: [
         {
@@ -133,7 +193,9 @@ export default defineComponent({
     const shareDialogVisible = ref(false);
     const uploading = ref(false);
     const drawer = ref(false);
-    const pageUrl = ref("http://localhost:8080/?workspace=");
+    const templateUrl = "https://editor.yandage.top/?workspace="
+    const backEndUrl = "https://editor.yandage.top"
+    const pageUrl = ref("");
     let intervalId;
 
     let monacoEditor = null
@@ -162,8 +224,8 @@ export default defineComponent({
       document.body.style.color = (i === 0 ? '#444444' : '#ffffff')
     }
 
-    function changeLang(languages) {
-      // const languages = ['vs', 'vs-dark', 'hc-black']
+    function changeLang(language) {
+      // const codeLanguages = ['vs', 'vs-dark', 'hc-black']
       // let editorValue;
       // console.log(selectedLang)
       // editorValue = monacoEditor.getValue()
@@ -173,17 +235,17 @@ export default defineComponent({
       //   automaticLayout: true,
       //   language: selectedLang
       // })
-      if (languages === "") {
+      if (language === "") {
         console.error("语言值为空")
         return
       }
-      monaco.editor.setModelLanguage(monacoEditor.getModel(), languages)
+      monaco.editor.setModelLanguage(monacoEditor.getModel(), language)
     }
 
     function upload() {
       console.log('upload')
       uploading.value = true
-      axios.post("http://127.0.0.1:9527/v1/upload", {
+      axios.post(backEndUrl + "/v1/upload", {
         "workspace": workspace.value,
         "content": monacoEditor.getValue(),
         "theme": selectedTheme.value,
@@ -202,6 +264,7 @@ export default defineComponent({
               console.log(response.data)
               ElMessage.error({
                 showClose: true,
+                duration: 0,
                 message: "来自后端的错误: " + response.data["content"],
                 type: "error"
               });
@@ -211,6 +274,7 @@ export default defineComponent({
             uploading.value = false
             ElMessage.error({
               showClose: true,
+              duration: 0,
               message: "上传失败, " + error,
               type: "error"
             });
@@ -218,14 +282,16 @@ export default defineComponent({
     }
 
     function getWorkspace() {
-      axios.post("http://127.0.0.1:9527/v1/create")
+      axios.post(backEndUrl + "/v1/create")
           .then(function (response) {
             if (response.data["result"] >= 0) {
               workspace.value = response.data["workspace"]
+              pageUrl.value = templateUrl + workspace.value
             } else {
               console.log(response.data)
               ElMessage.error({
                 showClose: true,
+                duration: 0,
                 message: "来自后端的错误: " + response.data["content"],
                 type: "error"
               });
@@ -236,6 +302,7 @@ export default defineComponent({
             uploading.value = false
             ElMessage.error({
               showClose: true,
+              duration: 0,
               message: "创建工作区失败, " + error,
               type: "error"
             });
@@ -243,7 +310,7 @@ export default defineComponent({
     }
 
     function getEditorData() {
-      axios.post("http://127.0.0.1:9527/v1/workspace",
+      axios.post(backEndUrl + "/v1/workspace",
           {
             "workspace": workspace.value,
           })
@@ -259,6 +326,7 @@ export default defineComponent({
               console.log(response.data)
               ElMessage.error({
                 showClose: true,
+                duration: 0,
                 message: "来自后端的错误: " + response.data["content"],
                 type: "error"
               });
@@ -268,6 +336,7 @@ export default defineComponent({
             uploading.value = false
             ElMessage.error({
               showClose: true,
+              duration: 0,
               message: "获取数据失败, " + error,
               type: "error"
             });
@@ -296,9 +365,9 @@ export default defineComponent({
         getWorkspace()
       } else {
         workspace.value = props.workspaceId
+        pageUrl.value = templateUrl + workspace.value
         getEditorData()
       }
-      pageUrl.value = pageUrl.value + workspace.value
     })
 
     onUnmounted(() => {
