@@ -18,6 +18,9 @@
               </el-select>
             </div>
             <div style="margin-left: 20px">
+              <el-button size="small" plain @click="runSettingDrawer = true">运行设置</el-button>
+            </div>
+            <div style="margin-left: 20px">
               <el-tooltip :show-after=1000 effect="dark" content="操作提示和关于" placement="bottom">
                 <el-button size="small" circle icon="el-icon-s-opportunity" @click="drawer = true"></el-button>
               </el-tooltip>
@@ -32,9 +35,24 @@
             </div>
             <div style="margin-left: 20px; margin-right: 10px">
               <el-button-group style="width: 219px; white-space: nowrap">
-                <el-button size="small" type="success" icon="el-icon-caret-right" @click="dialogVisible = true">运行
-                </el-button>
-                <el-button @click="upload" size="small" icon="el-icon-upload" :loading="uploading" type="primary">上传
+                <el-popover placement="bottom-end" :width="560" trigger="manual" v-model:visible="runDialogVisible">
+                  <div>
+                    <div style="max-height: 560px; overflow: auto">
+                      <code>{{ runResult }}</code>
+                    </div>
+                    <div class="row">
+                      <el-button size="mini" @click="runDialogVisible = false">关闭</el-button>
+                      <label style="margin-left: 40px">运行时间: {{ runDuration }} ms</label>
+                    </div>
+                  </div>
+                  <template #reference>
+                    <el-button size="small" type="success" icon="el-icon-caret-right" :loading="running"
+                               @click="runCode" :disabled="disableUpload">运行
+                    </el-button>
+                  </template>
+                </el-popover>
+                <el-button @click="upload" size="small" icon="el-icon-upload" :loading="uploading" type="primary"
+                           :disabled="disableUpload">上传
                 </el-button>
                 <el-popover :show-after="1000" placement="bottom-end" :width="400" trigger="hover">
                   <span style="margin-right: 20px">你可以通过下面的链接打开此页面</span><br/>
@@ -45,9 +63,8 @@
                   <span style="margin-right: 20px">点击按钮以复制</span><br/>
                   <template #reference>
                     <el-button size="small" type="primary" icon="el-icon-share"
-                               @click="shareDialogVisible = true; upload()"
-                               v-clipboard:copy="pageUrl"
-                               v-clipboard:success="onCopy">分享
+                               @click="shareDialogVisible = true; upload()" v-clipboard:copy="pageUrl"
+                               v-clipboard:success="onCopy" :disabled="disableUpload">分享
                     </el-button>
                   </template>
                 </el-popover>
@@ -59,25 +76,21 @@
 
     </div>
     <div id="container" style="height: 100%;"></div>
-    <el-dialog
-        v-model="dialogVisible"
-        destroy-on-close
-    >
-      <span>这个功能程序员小哥哥还在开发中</span><br/>
-      <el-image style="width: 400px; height: auto"
-                fit="scale-down" src="../assets/coding-freak.gif"/>
+    <el-dialog v-model="dialogVisible" destroy-on-close>
+      <span>目前还只支持 C、C++ 语言的运行</span><br/>
+      <el-image style="width: 400px; height: auto" fit="scale-down" src="../assets/coding-freak.gif"/>
       <template #footer>
-    <span>
-      <el-button type="primary" @click="dialogVisible = false">好 的</el-button>
-    </span>
+      <span>
+        <el-button type="primary" @click="dialogVisible = false">好 的</el-button>
+      </span>
       </template>
     </el-dialog>
 
-    <el-drawer
-        v-model="drawer"
-        direction="ltr"
-        destroy-on-close>
+    <el-drawer v-model="drawer" direction="ltr" destroy-on-close>
       <Help/>
+    </el-drawer>
+    <el-drawer v-model="runSettingDrawer" direction="ttb" size="50%" destroy-on-close>
+      <RunSetting v-model:data="runInput"/>
     </el-drawer>
   </div>
 </template>
@@ -88,10 +101,11 @@ import {defineComponent, ref, onMounted, onUnmounted} from 'vue'
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
 import Help from "@/components/Help";
+import RunSetting from "@/components/RunSetting";
 
 export default defineComponent({
   name: 'HelloWorld',
-  components: {Help},
+  components: {RunSetting, Help},
   props: {
     workspaceId: {
       type: Number,
@@ -190,11 +204,19 @@ export default defineComponent({
     const selectedLang = ref('plaintext')
     const workspace = ref(0);
     const dialogVisible = ref(false);
+    const runDialogVisible = ref(false);
     const shareDialogVisible = ref(false);
     const uploading = ref(false);
+    const running = ref(false);
+    const runResult = ref("");
+    const runDuration = ref(0);
+    const runInput = ref("");
+    const disableUpload = ref(true)
     const drawer = ref(false);
+    const runSettingDrawer = ref(false);
     const templateUrl = "https://editor.yandage.top/?workspace="
     const backEndUrl = "https://editor.yandage.top"
+    // const backEndUrl = "http://127.0.0.1:9527"
     const pageUrl = ref("");
     let intervalId;
 
@@ -242,10 +264,10 @@ export default defineComponent({
       monaco.editor.setModelLanguage(monacoEditor.getModel(), language)
     }
 
-    function upload() {
+    async function upload() {
       console.log('upload')
       uploading.value = true
-      axios.post(backEndUrl + "/v1/upload", {
+      await axios.post(backEndUrl + "/v1/upload", {
         "workspace": workspace.value,
         "content": monacoEditor.getValue(),
         "theme": selectedTheme.value,
@@ -287,6 +309,7 @@ export default defineComponent({
             if (response.data["result"] >= 0) {
               workspace.value = response.data["workspace"]
               pageUrl.value = templateUrl + workspace.value
+              disableUpload.value = false
             } else {
               console.log(response.data)
               ElMessage.error({
@@ -322,6 +345,7 @@ export default defineComponent({
               changeTheme(selectedTheme.value)
               changeLang(selectedLang.value)
               monacoEditor.setValue(response.data["data"]["content"])
+              disableUpload.value = false
             } else {
               console.log(response.data)
               ElMessage.error({
@@ -333,11 +357,52 @@ export default defineComponent({
             }
           })
           .catch(function (error) {
-            uploading.value = false
             ElMessage.error({
               showClose: true,
               duration: 0,
               message: "获取数据失败, " + error,
+              type: "error"
+            });
+          })
+    }
+
+    async function runCode() {
+      const canRun = "c" + "cpp"
+      if (canRun.indexOf(selectedLang.value) === -1) {
+        dialogVisible.value = true
+        return
+      }
+      await upload()
+      running.value = true
+      console.log(runInput.value)
+      axios.post(backEndUrl + "/v1/run",
+          {
+            "workspace": workspace.value,
+            "input_string": runInput.value
+          })
+          .then(function (response) {
+            running.value = false
+            if (response.data["result"] >= 0) {
+              console.log(response.data["output"])
+              runResult.value = response.data["output"]
+              runDuration.value = response.data["duration"]
+              runDialogVisible.value = true
+            } else {
+              console.log(response.data)
+              ElMessage.error({
+                showClose: true,
+                duration: 0,
+                message: "来自后端的错误: " + response.data["content"],
+                type: "error"
+              });
+            }
+          })
+          .catch(function (error) {
+            running.value = false
+            ElMessage.error({
+              showClose: true,
+              duration: 0,
+              message: "错误, " + error,
               type: "error"
             });
           })
@@ -377,7 +442,8 @@ export default defineComponent({
     return {
       upload, monacoEditor, selectedTheme, selectedLang, changeLang, changeTheme,
       workspace, dialogVisible, shareDialogVisible, pageUrl, onCopy, uploading,
-      drawer
+      drawer, runSettingDrawer, runCode, running, runDialogVisible, runResult,
+      runInput, runDuration, disableUpload
     }
   },
 })
@@ -435,5 +501,15 @@ label {
 
 body {
   color: #444444;;
+}
+
+code {
+  white-space: pre;
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: normal;
+  font-size: 14px;
+  font-feature-settings: "liga" 0, "calt" 0;
+  line-height: 19px;
+  letter-spacing: 0;
 }
 </style>
