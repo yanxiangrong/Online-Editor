@@ -37,7 +37,7 @@
               <el-button-group style="width: 219px; white-space: nowrap">
                 <el-popover placement="bottom-end" :width="560" trigger="manual" v-model:visible="runDialogVisible">
                   <div>
-                    <div style="max-height: 560px; overflow: auto">
+                    <div style="max-height: 480px; overflow: auto">
                       <code>{{ runResult }}</code>
                     </div>
                     <div class="row">
@@ -77,7 +77,7 @@
     </div>
     <div id="container" style="height: 100%;"></div>
     <el-dialog v-model="dialogVisible" destroy-on-close>
-      <span>目前还只支持 C、C++ 语言的运行</span><br/>
+      <span>目前仅支持 C、C++、Python、Java、Go 语言的运行</span><br/>
       <el-image style="width: 400px; height: auto" fit="scale-down" src="../assets/coding-freak.gif"/>
       <template #footer>
       <span>
@@ -367,7 +367,7 @@ export default defineComponent({
     }
 
     async function runCode() {
-      const canRun = "c" + "cpp"
+      const canRun = "c" + "cpp" + "go" + "python" + "java"
       if (canRun.indexOf(selectedLang.value) === -1) {
         dialogVisible.value = true
         return
