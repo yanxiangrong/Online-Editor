@@ -31,13 +31,13 @@
         <el-col :span="12" :xs="24">
           <div class="row">
             <div style="margin-left: auto">
-              <label> {{ workspace === 0 ? "正在创建工作区..." : "工作区: " + workspace }}</label>
+              <label> {{ workspace === 0 ? "正在准备工作区..." : "工作区: " + workspace }}</label>
             </div>
             <div style="margin-left: 20px; margin-right: 10px">
               <el-button-group style="width: 219px; white-space: nowrap">
                 <el-popover placement="bottom-end" :width="560" trigger="manual" v-model:visible="runDialogVisible">
                   <div>
-                    <div style="max-height: 480px; overflow: auto">
+                    <div style="max-height: 400px; overflow: auto">
                       <code>{{ runResult }}</code>
                     </div>
                     <div class="row">

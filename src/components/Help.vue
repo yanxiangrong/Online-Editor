@@ -25,6 +25,17 @@
         https://github.com/yanxiangrong/Online-Editor
       </a>
     </p>
+    <div class="title" style="margin-top: 55px">更新日志</div>
+    <div style="margin-left: -33px">
+      <el-timeline>
+        <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :timestamp="activity.timestamp">
+          <p>{{ activity.content }}</p>
+        </el-timeline-item>
+      </el-timeline>
+    </div>
   </div>
 </template>
 
@@ -33,6 +44,20 @@ import {onMounted, onUnmounted} from "vue";
 
 export default {
   name: "Help",
+  data() {
+    return {
+      activities: [{
+        content: '增加对Python、Java、Golang语言的运行支持',
+        timestamp: '2021-02-25'
+      }, {
+        content: '增加对C、C++语言的运行功能',
+        timestamp: '2021-02-24'
+      }, {
+        content: '主要功能已完成，上线第一个版本',
+        timestamp: '2021-02-23'
+      }]
+    };
+  },
   setup() {
     let intervalId;
     onMounted(() => {
