@@ -110,7 +110,7 @@
       </template>
     </el-dialog>
 
-    <el-drawer v-model="drawer" direction="ltr" destroy-on-close>
+    <el-drawer v-model="drawer" :size="clientWidth >= 992 ? '30%' : clientWidth >= 768 ? '50%' : '70%'" direction="ltr" destroy-on-close>
       <Help/>
     </el-drawer>
     <el-drawer v-model="runSettingDrawer" direction="ttb" size="50%" destroy-on-close>
