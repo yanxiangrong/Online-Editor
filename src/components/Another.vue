@@ -58,10 +58,9 @@
                             :width="clientWidth > 650 ? 560 : 340" trigger="manual"
                             v-model:visible="runDialogVisible">
                   <div>
-                    <div :style="clientHeight > 600 ? 'max-height: 400px' : 'max-height: 200px'">
-                      <div style="height: 100%; width: 100%; overflow: auto">
-                        <code>{{ runResult }}</code>
-                      </div>
+                    <div :style="clientHeight > 600 ? 'max-height: 400px' : 'max-height: 200px'"
+                         style="width: 100%; overflow: auto">
+                      <code>{{ runResult }}</code>
                     </div>
                     <div class="row">
                       <el-button size="mini" @click="runDialogVisible = false">关闭</el-button>
@@ -99,7 +98,7 @@
       </el-row>
 
     </div>
-    <div  class="codeMirror" style="height: 100%" id="container">
+    <div class="codeMirror" style="height: 100%" id="container">
       <textarea id="myTextArea"/>
     </div>
     <el-dialog v-model="dialogVisible" destroy-on-close>
@@ -112,7 +111,8 @@
       </template>
     </el-dialog>
 
-    <el-drawer :size="clientWidth >= 992 ? '30%' : clientWidth >= 768 ? '50%' : '70%'" v-model="drawer" direction="ltr" destroy-on-close>
+    <el-drawer :size="clientWidth >= 992 ? '30%' : clientWidth >= 768 ? '50%' : '70%'" v-model="drawer" direction="ltr"
+               destroy-on-close>
       <Help/>
     </el-drawer>
     <el-drawer v-model="runSettingDrawer" direction="ttb" size="50%" destroy-on-close>
@@ -490,6 +490,7 @@ code {
   line-height: 19px;
   letter-spacing: 0;
 }
+
 .codeMirror {
   font-family: Consolas, "Courier New", monospace;
   font-weight: normal;

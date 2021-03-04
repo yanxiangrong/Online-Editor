@@ -58,10 +58,9 @@
                             :width="clientWidth > 650 ? 560 : 340" trigger="manual"
                             v-model:visible="runDialogVisible">
                   <div>
-                    <div :style="clientHeight > 600 ? 'max-height: 400px' : 'max-height: 200px'">
-                      <div style="height: 100%; width: 100%; overflow: auto">
-                        <code>{{ runResult }}</code>
-                      </div>
+                    <div :style="clientHeight > 600 ? 'max-height: 400px' : 'max-height: 200px'"
+                         style="width: 100%; overflow: auto">
+                      <code>{{ runResult }}</code>
                     </div>
                     <div class="row">
                       <el-button size="mini" @click="runDialogVisible = false">关闭</el-button>
@@ -110,7 +109,8 @@
       </template>
     </el-dialog>
 
-    <el-drawer v-model="drawer" :size="clientWidth >= 992 ? '30%' : clientWidth >= 768 ? '50%' : '70%'" direction="ltr" destroy-on-close>
+    <el-drawer v-model="drawer" :size="clientWidth >= 992 ? '30%' : clientWidth >= 768 ? '50%' : '70%'" direction="ltr"
+               destroy-on-close>
       <Help/>
     </el-drawer>
     <el-drawer v-model="runSettingDrawer" direction="ttb" size="50%" destroy-on-close>
