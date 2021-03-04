@@ -35,7 +35,9 @@
             v-for="(activity, index) in activities"
             :key="index"
             :timestamp="activity.timestamp">
-          <p>{{ activity.content }}</p>
+          <div style="color: #5e6d82;">
+            {{ activity.content }}
+          </div>
         </el-timeline-item>
       </el-timeline>
     </div>
