@@ -193,7 +193,7 @@ export default defineComponent({
     const clientWidth = ref(0)
     const clientHeight = ref(0)
     const runSettingDrawer = ref(false);
-    const templateUrl = "https://editor.yandage.top/?workspace="
+    const templateUrl = "https://editor.yandage.top/#/?workspace="
     const backEndUrl = "https://editor.yandage.top"
     // const backEndUrl = "http://127.0.0.1:9527"
     const pageUrl = ref("");

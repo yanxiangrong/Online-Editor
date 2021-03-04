@@ -15,7 +15,7 @@
             <div class="hidden-md-and-down" style="width: 5px"/>
             <div class="row" style="margin-left: 5px">
               <label>语言</label>
-              <el-select size="small" @change="changeLang(selectedLang)"
+              <el-select size="small" filterable default-first-option @change="changeLang(selectedLang)"
                          v-model="selectedLang">
                 <el-option v-for="item in codeLanguages" :key="item.value" :label="item.label" :value="item.value"/>
               </el-select>
@@ -242,7 +242,7 @@ export default defineComponent({
     const clientWidth = ref(0)
     const clientHeight = ref(0)
     const runSettingDrawer = ref(false);
-    const templateUrl = "https://editor.yandage.top/?workspace="
+    const templateUrl = "https://editor.yandage.top/#/?workspace="
     const backEndUrl = "https://editor.yandage.top"
     // const backEndUrl = "http://127.0.0.1:9527"
     const pageUrl = ref("");

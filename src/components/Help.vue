@@ -13,9 +13,12 @@
     <div class="title" style="margin-top: 55px">运行提示</div>
     <p>Python 的运行环境是 Python 3.7。</p>
     <p>Java 代码的主类类名必须是 Main 才能运行。</p>
+    <p>为什么在手机上不能编辑？<br/>因为 Monaco Editor 不能在移动设备浏览器框架下工作，所以在移动设备上无法编辑。
+      不过我有一个替代版本可以在移动设备上使用，地址<a style="word-wrap: break-word" target="_blank" href="https://editor.yandage.top/#/v2">
+        https://editor.yandage.top/#/v2
+      </a></p>
     <div class="title" style="margin-top: 55px">关于</div>
-    <p>为什么这么久了才更新？</p>
-    <p>在此之前，我为了代码高亮，显示行号，代码补全等功能，查找了很多资料，尝试过许多方法，但是始终没有找到一种让我满意的方案。</p>
+    <p>为什么这么久了才更新？<br/>在此之前，我为了代码高亮，显示行号，代码补全等功能，查找了很多资料，尝试过许多方法，但是始终没有找到一种让我满意的方案。</p>
     <p>直到我遇到了 Monaco Editor，Monaco Editor 是微软公司开发的一款 Web 编辑器，它的很大一部分的代码和 Visual Studio Code 都是共用的，
       拥有 Visual Studio Code 的许多强大的功能。
     </p>
