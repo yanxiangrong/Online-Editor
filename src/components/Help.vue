@@ -47,6 +47,9 @@ export default {
   data() {
     return {
       activities: [{
+        content: '优化了一些细节',
+        timestamp: '2021-03-04'
+      }, {
         content: '增加对Python、Java、Golang语言的运行支持',
         timestamp: '2021-02-25'
       }, {

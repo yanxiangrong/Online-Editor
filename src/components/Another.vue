@@ -99,7 +99,9 @@
       </el-row>
 
     </div>
-    <div id="container" style="height: 100%;"></div>
+    <div  class="codeMirror" style="height: 100%" id="container">
+      <textarea id="myTextArea"/>
+    </div>
     <el-dialog v-model="dialogVisible" destroy-on-close>
       <span>目前仅支持 C、C++、Python、Java、Go 语言的运行</span><br/>
       <el-image style="max-width: 400px; height: auto" fit="scale-down" src="../assets/coding-freak.gif"/>
@@ -120,7 +122,6 @@
 </template>
 
 <script>
-import * as monaco from 'monaco-editor'
 import {defineComponent, ref, onMounted, onUnmounted} from 'vue'
 import 'element-plus/lib/theme-chalk/display.css';
 import axios from 'axios';
@@ -129,8 +130,17 @@ import Help from "@/components/Help";
 import RunSetting from "@/components/RunSetting";
 import router from '../router'
 
+import CodeMirror from 'codemirror/lib/codemirror.js';
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/lesser-dark.css'
+import 'codemirror/theme/colorforth.css'
+import 'codemirror/addon/edit/matchbrackets'
+import 'codemirror/mode/clike/clike.js';
+import 'codemirror/mode/go/go.js';
+import 'codemirror/mode/python/python.js';
+
 export default defineComponent({
-  name: 'HelloWorld',
+  name: 'Another',
   components: {RunSetting, Help},
   props: {
     workspaceId: {
@@ -141,81 +151,22 @@ export default defineComponent({
   data() {
     return {
       codeLanguages: [
-        {label: "abap", value: "abap"}, {label: "aes", value: "aes"}, {label: "apex", value: "apex"}, {
-          label: "azcli",
-          value: "azcli"
-        }, {label: "bat", value: "bat"}, {label: "c", value: "c"}, {
-          label: "cameligo",
-          value: "cameligo"
-        }, {label: "clojure", value: "clojure"}, {label: "coffeescript", value: "coffeescript"}, {
-          label: "cpp",
-          value: "cpp"
-        }, {label: "csharp", value: "csharp"}, {label: "csp", value: "csp"}, {
-          label: "css",
-          value: "css"
-        }, {label: "dart", value: "dart"}, {label: "dockerfile", value: "dockerfile"}, {
-          label: "ecl",
-          value: "ecl"
-        }, {label: "fsharp", value: "fsharp"}, {label: "go", value: "go"}, {
-          label: "graphql",
-          value: "graphql"
-        }, {label: "handlebars", value: "handlebars"}, {label: "hcl", value: "hcl"}, {
-          label: "html",
-          value: "html"
-        }, {label: "ini", value: "ini"}, {label: "java", value: "java"}, {
-          label: "javascript",
-          value: "javascript"
-        }, {label: "json", value: "json"}, {label: "julia", value: "julia"}, {
-          label: "kotlin",
-          value: "kotlin"
-        }, {label: "less", value: "less"}, {label: "lexon", value: "lexon"}, {label: "lua", value: "lua"}, {
-          label: "m3",
-          value: "m3"
-        }, {label: "markdown", value: "markdown"}, {label: "mips", value: "mips"}, {
-          label: "msdax",
-          value: "msdax"
-        }, {label: "mysql", value: "mysql"}, {label: "objective-c", value: "objective-c"}, {
-          label: "pascal",
-          value: "pascal"
-        }, {label: "pascaligo", value: "pascaligo"}, {label: "perl", value: "perl"}, {
-          label: "pgsql",
-          value: "pgsql"
-        }, {label: "php", value: "php"}, {label: "plaintext", value: "plaintext"}, {
-          label: "postiats",
-          value: "postiats"
-        }, {label: "powerquery", value: "powerquery"}, {label: "powershell", value: "powershell"}, {
-          label: "pug",
-          value: "pug"
-        }, {label: "python", value: "python"}, {label: "r", value: "r"}, {
-          label: "razor",
-          value: "razor"
-        }, {label: "redis", value: "redis"}, {label: "redshift", value: "redshift"}, {
-          label: "restructuredtext",
-          value: "restructuredtext"
-        }, {label: "ruby", value: "ruby"}, {label: "rust", value: "rust"}, {label: "sb", value: "sb"}, {
-          label: "scala",
-          value: "scala"
-        }, {label: "scheme", value: "scheme"}, {label: "scss", value: "scss"}, {
-          label: "shell",
-          value: "shell"
-        }, {label: "sol", value: "sol"}, {label: "sql", value: "sql"}, {label: "st", value: "st"}, {
-          label: "swift",
-          value: "swift"
-        }, {label: "systemverilog", value: "systemverilog"}, {label: "tcl", value: "tcl"}, {
-          label: "twig",
-          value: "twig"
-        }, {label: "typescript", value: "typescript"}, {label: "vb", value: "vb"}, {
-          label: "verilog",
-          value: "verilog"
-        }, {label: "xml", value: "xml"}, {label: "yaml", value: "yaml"},
+        {label: "c", value: "c"}, {label: "cpp", value: "cpp"}, {label: "go", value: "go"}, {
+          label: "java",
+          value: "java"
+        },
+        {label: "kotlin", value: "kotlin"}, {label: "plaintext", value: "plaintext"}, {
+          label: "python",
+          value: "python"
+        },
       ],
       themes: [
         {
-          label: "Visual Studio 亮",
+          label: "亮",
           value: "vs"
         },
         {
-          label: "Visual Studio 暗",
+          label: "暗",
           value: "vs-dark"
         },
         {
@@ -248,16 +199,32 @@ export default defineComponent({
     const pageUrl = ref("");
     let intervalId;
 
-    let monacoEditor = null
+    let codeEditor = null
 
     function initEditor() {
-      monacoEditor = monaco.editor.create(document.getElementById("container"), {
-        automaticLayout: true,
-      })
+      codeEditor = CodeMirror.fromTextArea(document.getElementById("myTextArea"), {
+        lineNumbers: true,// 显示行号
+        smartIndent: true, //智能缩进
+        indentUnit: 4, // 智能缩进单位为4个空格长度
+        indentWithTabs: true,  // 使用制表符进行智能缩进
+        // lineWrapping: true,//
+        // 在行槽中添加行号显示器、折叠器、语法检测器`
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-lint-markers"],
+        foldGutter: true, // 启用行槽中的代码折叠
+        autofocus: true,  //自动聚焦
+        matchBrackets: true,// 匹配结束符号，比如"]、}"
+        autoCloseBrackets: true, // 自动闭合符号
+        styleActiveLine: true, // 显示选中行的样式
+        lineWiseCopyCut: true, // 整行复制
+        // mode: '',
+        theme: 'default',  //colorforth //lesser-dark
+      });
+      codeEditor.setSize('auto', "100%");
     }
 
     function changeTheme(theme) {
       const themes = ['vs', 'vs-dark', 'hc-black']
+      const mirrorThemes = ["default", "lesser-dark", "colorforth"]
       const colors = ['#ffffff', '#1E1E1E', '#000000']
       let i = 0;
       while (themes[i] !== theme && i < themes.length) {
@@ -267,29 +234,32 @@ export default defineComponent({
         console.error("主题不存在")
         return
       }
-      monacoEditor.updateOptions({
-        theme: theme,
-      })
+      codeEditor.setOption("theme", mirrorThemes[i])
       document.body.style.backgroundColor = colors[i]
       document.body.style.color = (i === 0 ? '#444444' : '#ffffff')
     }
 
     function changeLang(language) {
-      // const codeLanguages = ['vs', 'vs-dark', 'hc-black']
-      // let editorValue;
-      // console.log(selectedLang)
-      // editorValue = monacoEditor.getValue()
-      // monacoEditor.dispose()
-      // monacoEditor = monaco.editor.create(document.getElementById("container"), {
-      //   value: editorValue,
-      //   automaticLayout: true,
-      //   language: selectedLang
-      // })
+      const languages = ['c', 'cpp', 'go', 'java', 'kotlin', 'plaintext', 'python']
+      const mirrorLanguages = ["text/x-csrc", "text/x-c++src", "text/x-java", "text/x-go", "text/x-kotlin", "", "python"]
+      let i = 0
+      while (languages[i] !== language && i < languages.length) {
+        i++
+      }
+      if (i === languages.length) {
+        console.error("语言不存在")
+        return
+      }
       if (language === "") {
         console.error("语言值为空")
         return
       }
-      monaco.editor.setModelLanguage(monacoEditor.getModel(), language)
+      // console.log(mirrorLanguages[i])
+      if (mirrorLanguages[i] === "python") {
+        codeEditor.setOption("mode", {name: "python", version: 3, singleLineStringErrors: false})
+      } else {
+        codeEditor.setOption("mode", mirrorLanguages[i])
+      }
     }
 
     async function upload() {
@@ -297,7 +267,7 @@ export default defineComponent({
       uploading.value = true
       await axios.post(backEndUrl + "/v1/upload", {
         "workspace": workspace.value,
-        "content": monacoEditor.getValue(),
+        "content": codeEditor.getValue(),
         "theme": selectedTheme.value,
         "language": selectedLang.value
       })
@@ -372,7 +342,7 @@ export default defineComponent({
               console.log(response.data["data"])
               changeTheme(selectedTheme.value)
               changeLang(selectedLang.value)
-              monacoEditor.setValue(response.data["data"]["content"])
+              codeEditor.setOption("value", response.data["data"]["content"])
               disableUpload.value = false
             } else {
               console.log(response.data)
@@ -459,7 +429,7 @@ export default defineComponent({
       if (props.workspaceId === 0) {
         (async function () {
           await getWorkspace()
-          await router.push({path: "/", query: {workspace: workspace.value}})
+          await router.push({path: "/v2", query: {workspace: workspace.value}})
         }())
       } else {
         workspace.value = props.workspaceId
@@ -473,7 +443,7 @@ export default defineComponent({
     })
 
     return {
-      upload, monacoEditor, selectedTheme, selectedLang, changeLang, changeTheme,
+      upload, codeEditor, selectedTheme, selectedLang, changeLang, changeTheme,
       workspace, dialogVisible, shareDialogVisible, pageUrl, onCopy, uploading,
       drawer, runSettingDrawer, runCode, running, runDialogVisible, runResult,
       runInput, runDuration, disableUpload, clientHeight, clientWidth
@@ -484,31 +454,6 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-/*body, button, input, select {*/
-/*  font: 400 14px/1.4em "Segoe UI", "Open Sans", Calibri, Candara, Arial, sans-serif;*/
-/*  line-height: 20px;*/
-/*  font-size: 14px;*/
-/*  font-family: "Segoe UI", "Open Sans", Calibri, Candara, Arial, sans-serif;*/
-/*}*/
-
-/*select {*/
-/*  width: 220px;*/
-/*  border: 1px solid #bbb;*/
-/*  line-height: 30px;*/
-/*  display: inline-block;*/
-/*  padding: 4px 6px;*/
-/*  margin: 0 0 10px;*/
-/*  font-size: 14px;*/
-/*  color: black;*/
-/*  vertical-align: middle;*/
-/*}*/
-
-/*button, input, label, select {*/
-/*  font-size: 14px;*/
-/*  font-weight: 400;*/
-/*  line-height: 20px;*/
-/*}*/
-
 label {
   display: block;
   line-height: 30px;
@@ -538,6 +483,14 @@ body {
 
 code {
   white-space: pre;
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: normal;
+  font-size: 14px;
+  font-feature-settings: "liga" 0, "calt" 0;
+  line-height: 19px;
+  letter-spacing: 0;
+}
+.codeMirror {
   font-family: Consolas, "Courier New", monospace;
   font-weight: normal;
   font-size: 14px;
