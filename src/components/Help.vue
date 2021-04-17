@@ -52,6 +52,9 @@ export default {
   data() {
     return {
       activities: [{
+        content: '添加以只读模式打开',
+        timestamp: '2021-04-017'
+      }, {
         content: '优化了一些细节',
         timestamp: '2021-03-04'
       }, {

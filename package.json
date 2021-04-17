@@ -8,6 +8,9 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@capacitor/android": "^2.4.7",
+    "@capacitor/cli": "^2.4.7",
+    "@capacitor/core": "^2.4.7",
     "axios": "^0.21.1",
     "codemirror": "^5.59.4",
     "core-js": "^3.6.5",
@@ -25,9 +28,7 @@
     "element-plus": "^1.0.2-beta.33",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0-0",
-    "monaco-editor": "^0.22.3",
-    "monaco-editor-nls": "^2.0.0",
-    "vue-clipboard2": "^0.3.1"
+    "monaco-editor": "^0.22.3"
   },
   "eslintConfig": {
     "root": true,

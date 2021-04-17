@@ -73,7 +73,11 @@
                     </el-button>
                   </template>
                 </el-popover>
-                <el-button @click="upload" size="small" icon="el-icon-upload" :loading="uploading" type="primary"
+                <el-button v-if="isReadOnly" @click="setReadOnly(false)" size="small" icon="el-icon-edit"
+                           :loading="uploading" type="primary"
+                           :disabled="disableUpload">编辑
+                </el-button>
+                <el-button v-else @click="upload" size="small" icon="el-icon-upload" :loading="uploading" type="primary"
                            :disabled="disableUpload">上传
                 </el-button>
                 <el-popover :show-after="1000" placement="bottom-end" :width="340" trigger="hover">
@@ -244,6 +248,7 @@ export default defineComponent({
     const runSettingDrawer = ref(false);
     const templateUrl = "https://editor.yandage.top/#/?workspace="
     const backEndUrl = "https://editor.yandage.top"
+    const isReadOnly = ref(true)
     // const backEndUrl = "http://127.0.0.1:9527"
     const pageUrl = ref("");
     let intervalId;
@@ -253,7 +258,15 @@ export default defineComponent({
     function initEditor() {
       monacoEditor = monaco.editor.create(document.getElementById("container"), {
         automaticLayout: true,
+        readOnly: isReadOnly.value,
       })
+    }
+
+    function setReadOnly(value) {
+      monacoEditor.updateOptions({
+        readOnly: value
+      })
+      isReadOnly.value = value
     }
 
     function changeTheme(theme) {
@@ -461,6 +474,7 @@ export default defineComponent({
           await getWorkspace()
           await router.push({path: "/", query: {workspace: workspace.value}})
         }())
+        setReadOnly(false)
       } else {
         workspace.value = props.workspaceId
         pageUrl.value = templateUrl + workspace.value
@@ -476,7 +490,8 @@ export default defineComponent({
       upload, monacoEditor, selectedTheme, selectedLang, changeLang, changeTheme,
       workspace, dialogVisible, shareDialogVisible, pageUrl, onCopy, uploading,
       drawer, runSettingDrawer, runCode, running, runDialogVisible, runResult,
-      runInput, runDuration, disableUpload, clientHeight, clientWidth
+      runInput, runDuration, disableUpload, clientHeight, clientWidth, setReadOnly,
+      isReadOnly
     }
   },
 })
