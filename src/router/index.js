@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, } from 'vue-router'
+import {createRouter, createWebHashHistory} from 'vue-router'
 import HelloWorld from "@/components/HelloWorld";
 import Another from "@/components/Another";
 

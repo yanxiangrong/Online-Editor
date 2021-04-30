@@ -103,6 +103,7 @@
 
     </div>
     <div id="container" style="height: 100%;"></div>
+    <CharacterBar v-if="isMobile"/>
     <el-dialog v-model="dialogVisible" destroy-on-close>
       <span>目前仅支持 C、C++、Python、Java、Go 语言的运行</span><br/>
       <el-image style="max-width: 400px; height: auto" fit="scale-down" src="../assets/coding-freak.gif"/>
@@ -125,17 +126,18 @@
 
 <script>
 import * as monaco from 'monaco-editor'
-import {defineComponent, ref, onMounted, onUnmounted} from 'vue'
+import {defineComponent, onMounted, onUnmounted, ref} from 'vue'
 import 'element-plus/lib/theme-chalk/display.css';
 import axios from 'axios';
 import {ElMessage} from 'element-plus'
 import Help from "@/components/Help";
 import RunSetting from "@/components/RunSetting";
 import router from '../router'
+import CharacterBar from "@/components/CharacterBar";
 
 export default defineComponent({
   name: 'HelloWorld',
-  components: {RunSetting, Help},
+  components: {CharacterBar, RunSetting, Help},
   props: {
     workspaceId: {
       type: Number,
@@ -251,6 +253,7 @@ export default defineComponent({
     const isReadOnly = ref(true)
     // const backEndUrl = "http://127.0.0.1:9527"
     const pageUrl = ref("");
+    const isMobile = ref(false);
     let intervalId;
 
     let monacoEditor = null
@@ -462,9 +465,17 @@ export default defineComponent({
         clientHeight.value = document.documentElement.clientHeight
         clientWidth.value = document.documentElement.clientWidth
         if (document.documentElement.clientWidth < 768) {
-          myapp.style.height = clientHeight.value - 107 + 'px'
+          if (isMobile.value) {
+            myapp.style.height = clientHeight.value - 119 + 'px'
+          } else {
+            myapp.style.height = clientHeight.value - 107 + 'px'
+          }
         } else {
-          myapp.style.height = clientHeight.value - 72 + 'px'
+          if (isMobile.value) {
+            myapp.style.height = clientHeight.value - 84 + 'px'
+          } else {
+            myapp.style.height = clientHeight.value - 72 + 'px'
+          }
         }
       }, 500)
       initEditor()
@@ -480,18 +491,24 @@ export default defineComponent({
         pageUrl.value = templateUrl + workspace.value
         getEditorData()
       }
+
+      isMobile.value = _isMobile();
     })
 
     onUnmounted(() => {
       clearInterval(intervalId)
     })
 
+    function _isMobile() {
+      return !!navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i);
+    }
+
     return {
       upload, monacoEditor, selectedTheme, selectedLang, changeLang, changeTheme,
       workspace, dialogVisible, shareDialogVisible, pageUrl, onCopy, uploading,
       drawer, runSettingDrawer, runCode, running, runDialogVisible, runResult,
       runInput, runDuration, disableUpload, clientHeight, clientWidth, setReadOnly,
-      isReadOnly
+      isReadOnly, isMobile
     }
   },
 })
